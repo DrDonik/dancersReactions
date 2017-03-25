@@ -50,8 +50,13 @@ partneredDancers = partneredRatio*min(initialLeaderPopulation,initialLeaderPopul
 leaders(partneredDancers+1:end, 13)=0; % now the initial population is partially partnered
 followers(partneredDancers+1:end, 13)=0;
 
+dancerSummaryFigure = figure;
+
 for i = 1:10
 %% Display the dancers mean values
+errorbar(i, mean(leaders(:,11)), std(leaders(:,11)), 'ro')
+hold on
+errorbar(i, mean(followers(:,11)), std(leaders(:,11)), 'bo')
 disp(['Leaders'' happiness: ', num2str(mean(leaders(:,11)))])
 disp(['Followers'' happiness: ', num2str(mean(followers(:,11)))])
 
