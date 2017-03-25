@@ -11,8 +11,8 @@ dancerProps = {'planned',...
     'home-scene bound',...
     'returning',...
     'frustration-tolerant',...
-    'preferred partner',...
     'happy/motivated',...
+    'preferred partner',...
     'visited workshops'...
 };
 
@@ -34,12 +34,12 @@ initialLeaderPopulation = round(initialDancerPopulation/2*leadFollowRatio);
 initialFollowerPopulation = round(initialDancerPopulation/2/leadFollowRatio);
 
 leaders = [randn(initialLeaderPopulation, length(dancerProps) - 3), ... % the personal attributes are normally distributed
-    (1:initialLeaderPopulation)', ... % right now, everybody is partnered. This will be changed in the next subsection
     randn(initialLeaderPopulation, 1) + 1, ... % everybody starts out quite happy
+    (1:initialLeaderPopulation)', ... % right now, everybody is partnered. This will be changed in the next subsection
     zeros(initialLeaderPopulation, 1)]; % everybody has not participated at any event 
 followers = [randn(initialFollowerPopulation, length(dancerProps) - 3), ...
-    (1:initialFollowerPopulation)', ...
     randn(initialFollowerPopulation, 1) + 1, ...
+    (1:initialFollowerPopulation)', ...
     zeros(initialFollowerPopulation, 1)];
 
 % what part of the dancers is partnered?
@@ -50,8 +50,8 @@ followers(partneredDancers+1:end, 13)=0;
 
 for i = 1:10
 %% Display the dancers mean values
-disp(['Leaders'' happiness: ', num2str(mean(leaders(:,12)))])
-disp(['Followers'' happiness: ', num2str(mean(followers(:,12)))])
+disp(['Leaders'' happiness: ', num2str(mean(leaders(:,11)))])
+disp(['Followers'' happiness: ', num2str(mean(followers(:,11)))])
 
 %% Start an event registration and check who is getting in
 % set the properties of an event
@@ -68,9 +68,9 @@ thisEventFollowers = followers(applicantsFollowers, :);
 % sort the population by their planned-attributed, modified by their motivation
 % the more planned and the more happy/motivated they are, the earlier will
 % the register
-[~, indexLeaders] = sort(thisEventLeaders(:, 1) + thisEventLeaders(:, 12), 1, 'descend');
+[~, indexLeaders] = sort(thisEventLeaders(:, 1) + thisEventLeaders(:, 11), 1, 'descend');
 thisEventLeaders = applicantsLeaders(indexLeaders);
-[~, indexFollowers] = sort(thisEventFollowers(:, 1) + thisEventFollowers(:, 12), 1, 'descend');
+[~, indexFollowers] = sort(thisEventFollowers(:, 1) + thisEventFollowers(:, 11), 1, 'descend');
 thisEventFollowers = applicantsFollowers(indexFollowers);
 
 switch thisEventProps(3)
@@ -98,16 +98,16 @@ leaders(thisEventLeaders, 13) = leaders(thisEventLeaders, 13) + 1;
 followers(thisEventFollowers, 13) = followers(thisEventFollowers, 13) + 1;
 
 % the happiness/motivation of everybody goes down with time
-leaders(:,12) = leaders(:,12) - 0.05;
-followers(:,12) = followers(:,12) - 0.05;
+leaders(:, 11) = leaders(:, 11) - 0.05;
+followers(:, 11) = followers(:, 11) - 0.05;
 
 % update the happiness/motivation of the rejected (it seems as if we
 % degraded all; instead, we will update the participants double as much)
-leaders(applicantsLeaders, 12) = leaders(applicantsLeaders, 12) - 0.1;
-followers(applicantsFollowers, 12) = followers(applicantsFollowers, 12) - 0.1;
+leaders(applicantsLeaders, 11) = leaders(applicantsLeaders, 11) - 0.1;
+followers(applicantsFollowers, 11) = followers(applicantsFollowers, 11) - 0.1;
 
 % update the happiness/motivation of the participants
-leaders(thisEventLeaders, 12) = leaders(thisEventLeaders, 12) + 0.2;
-followers(thisEventFollowers, 12) = followers(thisEventFollowers, 12) + 0.2;
+leaders(thisEventLeaders, 11) = leaders(thisEventLeaders, 11) + 0.2;
+followers(thisEventFollowers, 11) = followers(thisEventFollowers, 11) + 0.2;
 
 end
