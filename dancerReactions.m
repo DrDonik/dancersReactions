@@ -54,15 +54,13 @@ dancerSummaryFigure = figure;
 
 for i = 1:10
     %% Dancers with negative happiness are no longer part of the scene
-    leadersDancingIndeces = find(leaders(:, 11) > 0);
-    followersDancingIndeces = find(leaders(:, 11) > 0);
+    leadersDancingIndeces = leaders(:, 11) > 0;
+    followersDancingIndeces = followers(:, 11) > 0;
     
     %% Display the dancers mean happiness values
-    errorbar(i, mean(leaders(:,11)), std(leaders(:,11)), 'ro')
+    errorbar(i, mean(leaders(leadersDancingIndeces,11)), std(leaders(leadersDancingIndeces,11)), 'ro')
     hold on
-    errorbar(i, mean(followers(:,11)), std(leaders(:,11)), 'bo')
-    disp(['Leaders'' happiness: ', num2str(mean(leaders(:,11)))])
-    disp(['Followers'' happiness: ', num2str(mean(followers(:,11)))])
+    errorbar(i, mean(followers(followersDancingIndeces,11)), std(followers(followersDancingIndeces,11)), 'bo')
 
     %% Start an event registration and check who is getting in
     % set the properties of an event
@@ -70,10 +68,10 @@ for i = 1:10
 
     % not all will want to participate (currently about half)
     applicantsLeadersIndices = logical(randi(2,1,length(leaders))' - 1);
-    applicantsLeadersIndices = find(applicantsLeadersIndices);
+    applicantsLeadersIndices = find(applicantsLeadersIndices & leadersDancingIndeces);
     thisEventLeadersIndices = leaders(applicantsLeadersIndices, :);
     applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
-    applicantsFollowersIndices = find(applicantsFollowersIndices);
+    applicantsFollowersIndices = find(applicantsFollowersIndices & followersDancingIndeces);
     thisEventFollowersIndices = followers(applicantsFollowersIndices, :);
 
     % sort the population by their planned-attributed, modified by their motivation
