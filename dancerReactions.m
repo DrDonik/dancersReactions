@@ -52,10 +52,12 @@ followers(partneredDancers+1:end, 13)=0;
 
 dancerSummaryFigure = figure;
 
-for i = 1:10
+for i = 1:100
     %% Dancers with negative happiness are no longer part of the scene
     leadersDancingIndeces = leaders(:, 11) > 0;
+    currentLeaderPopulation = sum(leadersDancingIndeces);
     followersDancingIndeces = followers(:, 11) > 0;
+    currentFollowerPopulation = sum(followersDancingIndeces);
     
     %% Display the dancers mean happiness values
     errorbar(i, mean(leaders(leadersDancingIndeces,11)), std(leaders(leadersDancingIndeces,11)), 'ro')
