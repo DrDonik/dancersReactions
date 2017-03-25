@@ -33,12 +33,14 @@ initialDancerPopulation = 250;
 initialLeaderPopulation = round(initialDancerPopulation/2*leadFollowRatio);
 initialFollowerPopulation = round(initialDancerPopulation/2/leadFollowRatio);
 
-leaders = [randn(initialLeaderPopulation, length(dancerProps) - 3), ... % the personal attributes are normally distributed
-    randn(initialLeaderPopulation, 1) + 1, ... % everybody starts out quite happy
+leaders = [randn(initialLeaderPopulation, length(dancerProps) - 4), ... % the personal attributes are normally distributed
+    abs(randn(initialLeaderPopulation, 1)*0.1 + 1), ... % the frustration tolerance is a multiplicator and can only be positive
+    randn(initialLeaderPopulation, 1) + 10, ... % everybody starts out quite happy
     (1:initialLeaderPopulation)', ... % right now, everybody is partnered. This will be changed in the next subsection
     zeros(initialLeaderPopulation, 1)]; % everybody has not participated at any event 
-followers = [randn(initialFollowerPopulation, length(dancerProps) - 3), ...
-    randn(initialFollowerPopulation, 1) + 1, ...
+followers = [randn(initialFollowerPopulation, length(dancerProps) - 4), ...
+    abs(randn(initialFollowerPopulation, 1)*0.1 + 1), ...
+    randn(initialFollowerPopulation, 1) + 10, ...
     (1:initialFollowerPopulation)', ...
     zeros(initialFollowerPopulation, 1)];
 
@@ -101,13 +103,13 @@ followers(thisEventFollowers, 13) = followers(thisEventFollowers, 13) + 1;
 leaders(:, 11) = leaders(:, 11) - 0.05;
 followers(:, 11) = followers(:, 11) - 0.05;
 
-% update the happiness/motivation of the rejected (it seems as if we
-% degraded all; instead, we will update the participants double as much)
-leaders(applicantsLeaders, 11) = leaders(applicantsLeaders, 11) - 0.1;
-followers(applicantsFollowers, 11) = followers(applicantsFollowers, 11) - 0.1;
+% update the happiness/motivation of the rejected, depending on their frustration tolerance
+% (it seems as if we degraded all; but we will update the actual participants in the next step)
+leaders(applicantsLeaders, 11) = leaders(applicantsLeaders, 11) - 1./leaders(applicantsLeaders, 10);
+followers(applicantsFollowers, 11) = followers(applicantsFollowers, 11) - 1./followers(applicantsFollowers, 10);
 
 % update the happiness/motivation of the participants
-leaders(thisEventLeaders, 11) = leaders(thisEventLeaders, 11) + 0.2;
-followers(thisEventFollowers, 11) = followers(thisEventFollowers, 11) + 0.2;
+leaders(thisEventLeaders, 11) = leaders(thisEventLeaders, 11) + 1;
+followers(thisEventFollowers, 11) = followers(thisEventFollowers, 11) + 1;
 
 end
