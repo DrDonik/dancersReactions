@@ -24,8 +24,8 @@ eventProps = {'number of places',...
     'price-pattern',...
 };
 
-leadersRejected = 0;
-followersRejected = 0;
+totalLeadersRejected = 0;
+totalFollowersRejected = 0;
 
 % make an initial population of dancers
 leadFollowRatio = 0.8;
@@ -54,8 +54,8 @@ dancerSummaryFigure = figure;
 
 for i = 1:10
     %% Dancers with negative happiness are no longer part of the scene
-    leadersDancingIndex = find(leaders(:, 11) > 0);
-    followersDancingIndex = find(leaders(:, 11) > 0);
+    leadersDancingIndeces = find(leaders(:, 11) > 0);
+    followersDancingIndeces = find(leaders(:, 11) > 0);
     
     %% Display the dancers mean happiness values
     errorbar(i, mean(leaders(:,11)), std(leaders(:,11)), 'ro')
@@ -69,20 +69,20 @@ for i = 1:10
     thisEventProps = [100,1,1,1,1];
 
     % not all will want to participate (currently about half)
-    applicantsLeaders = logical(randi(2,1,length(leaders))' - 1);
-    applicantsLeaders = find(applicantsLeaders);
-    thisEventLeaders = leaders(applicantsLeaders, :);
-    applicantsFollowers = logical(randi(2,1,length(followers))' - 1);
-    applicantsFollowers = find(applicantsFollowers);
-    thisEventFollowers = followers(applicantsFollowers, :);
+    applicantsLeadersIndices = logical(randi(2,1,length(leaders))' - 1);
+    applicantsLeadersIndices = find(applicantsLeadersIndices);
+    thisEventLeadersIndices = leaders(applicantsLeadersIndices, :);
+    applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
+    applicantsFollowersIndices = find(applicantsFollowersIndices);
+    thisEventFollowersIndices = followers(applicantsFollowersIndices, :);
 
     % sort the population by their planned-attributed, modified by their motivation
     % the more planned and the more happy/motivated they are, the earlier will
     % the register
-    [~, indexLeaders] = sort(thisEventLeaders(:, 1) + thisEventLeaders(:, 11), 1, 'descend');
-    thisEventLeaders = applicantsLeaders(indexLeaders);
-    [~, indexFollowers] = sort(thisEventFollowers(:, 1) + thisEventFollowers(:, 11), 1, 'descend');
-    thisEventFollowers = applicantsFollowers(indexFollowers);
+    [~, sortedApplicantsLeadersIndices] = sort(thisEventLeadersIndices(:, 1) + thisEventLeadersIndices(:, 11), 1, 'descend');
+    thisEventLeadersIndices = applicantsLeadersIndices(sortedApplicantsLeadersIndices);
+    [~, sortedApplicantsFollowersIndices] = sort(thisEventFollowersIndices(:, 1) + thisEventFollowersIndices(:, 11), 1, 'descend');
+    thisEventFollowersIndices = applicantsFollowersIndices(sortedApplicantsFollowersIndices);
 
     switch thisEventProps(3)
         case 0
@@ -92,21 +92,21 @@ for i = 1:10
             % this is a roled event
 
             % find who made it into the workshop
-            thisEventLeaders = thisEventLeaders(1:min(length(thisEventLeaders),thisEventProps(1)/2),:);
-            thisEventFollowers = thisEventFollowers(1:min(length(thisEventFollowers),length(thisEventLeaders)),:);
-            thisEventLeaders = thisEventLeaders(1:min(length(thisEventLeaders),length(thisEventFollowers)),:);
+            thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),thisEventProps(1)/2));
+            thisEventFollowersIndices = thisEventFollowersIndices(1:min(length(thisEventFollowersIndices),length(thisEventLeadersIndices)),:);
+            thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),length(thisEventFollowersIndices)));
 
         case 2
             % this is a partnered event
     end
 
     % keep a total of how many got rejected at all events
-    leadersRejected = leadersRejected + length(applicantsLeaders) - length(thisEventLeaders);
-    followersRejected = followersRejected + length(applicantsFollowers) - length(thisEventFollowers);
+    totalLeadersRejected = totalLeadersRejected + length(applicantsLeadersIndices) - length(thisEventLeadersIndices);
+    totalFollowersRejected = totalFollowersRejected + length(applicantsFollowersIndices) - length(thisEventFollowersIndices);
 
     % mark the participation for each dancer
-    leaders(thisEventLeaders, 13) = leaders(thisEventLeaders, 13) + 1;
-    followers(thisEventFollowers, 13) = followers(thisEventFollowers, 13) + 1;
+    leaders(thisEventLeadersIndices, 13) = leaders(thisEventLeadersIndices, 13) + 1;
+    followers(thisEventFollowersIndices, 13) = followers(thisEventFollowersIndices, 13) + 1;
 
     % the happiness/motivation of everybody goes down with time
     leaders(:, 11) = leaders(:, 11) - 0.05;
@@ -114,11 +114,11 @@ for i = 1:10
 
     % update the happiness/motivation of the rejected, depending on their frustration tolerance
     % (it seems as if we degraded all; but we will update the actual participants in the next step)
-    leaders(applicantsLeaders, 11) = leaders(applicantsLeaders, 11) - 1./leaders(applicantsLeaders, 10);
-    followers(applicantsFollowers, 11) = followers(applicantsFollowers, 11) - 1./followers(applicantsFollowers, 10);
+    leaders(applicantsLeadersIndices, 11) = leaders(applicantsLeadersIndices, 11) - 1./leaders(applicantsLeadersIndices, 10);
+    followers(applicantsFollowersIndices, 11) = followers(applicantsFollowersIndices, 11) - 1./followers(applicantsFollowersIndices, 10);
 
     % update the happiness/motivation of the participants
-    leaders(thisEventLeaders, 11) = leaders(thisEventLeaders, 11) + 1;
-    followers(thisEventFollowers, 11) = followers(thisEventFollowers, 11) + 1;
+    leaders(thisEventLeadersIndices, 11) = leaders(thisEventLeadersIndices, 11) + 1;
+    followers(thisEventFollowersIndices, 11) = followers(thisEventFollowersIndices, 11) + 1;
 
 end
