@@ -39,19 +39,19 @@ for i = 1:100
     leaders = [leaders; createNewDancers(newLeaderPopulation)];
     followers = [followers; createNewDancers(newFollowerPopulation)];
     
+    % Partnered dancers will have their average happiness as their current score
+    partneredLeaders = leaders(:, 12) > 0;
+    if sum(partneredLeaders) > 0
+        for partneredLeadersIndex = find(partneredLeaders)
+            leaders(partneredLeadersIndex, 11) = mean([leaders(partneredLeadersIndex, 11), ...
+                followers(leaders(partneredLeadersIndex, 12), 11)]);
+            followers(leaders(partneredLeadersIndex, 12), 11) = leaders(partneredLeadersIndex, 11);
+        end
+    end
+    
     % Dancers with negative happiness are no longer part of the scene
     leadersDancingIndeces = leaders(:, 11) > 0;
     followersDancingIndeces = followers(:, 11) > 0;
-    
-    % Partners of unhappy dancers also fall out of the scene
-    partneredUnhappyLeaders = ~leadersDancingIndeces & leaders(:, 12) > 0;
-    for unhappyLeaderPartnerIndex = leaders(partneredUnhappyLeaders, 12)
-        followers(unhappyLeaderPartnerIndex, 11) = -1;
-    end
-    partneredUnhappyFollowers = ~followersDancingIndeces & followers(:, 12) > 0;
-    for unhappyFollowerPartnerIndex = followers(partneredUnhappyFollowers, 12)
-        followers(unhappyFollowerPartnerIndex, 11) = -1;
-    end
 
     currentLeaderPopulation = sum(leadersDancingIndeces);
     currentFollowerPopulation = sum(followersDancingIndeces);
