@@ -32,22 +32,34 @@ totalSceneHappiness = sum([leaders(:, 11); ...
 dancerSummaryFigure = figure;
 
 for i = 1:100
-    %% New dancers will join the scene regularly, based on the total active scene happiness
+    %% Update the scene population
+    % New dancers will join the scene regularly, based on the total active scene happiness
     newLeaderPopulation = round(totalSceneHappiness/1000);
     newFollowerPopulation = round(newLeaderPopulation/leadFollowRatio);
     leaders = [leaders; createNewDancers(newLeaderPopulation)];
     followers = [followers; createNewDancers(newFollowerPopulation)];
     
-    %% Dancers with negative happiness are no longer part of the scene
+    % Dancers with negative happiness are no longer part of the scene
     leadersDancingIndeces = leaders(:, 11) > 0;
-    currentLeaderPopulation = sum(leadersDancingIndeces);
     followersDancingIndeces = followers(:, 11) > 0;
+    
+    % Partners of unhappy dancers also fall out of the scene
+    partneredUnhappyLeaders = ~leadersDancingIndeces & leaders(:, 12) > 0;
+    for unhappyLeaderPartnerIndex = leaders(partneredUnhappyLeaders, 12)
+        followers(unhappyLeaderPartnerIndex, 11) = -1;
+    end
+    partneredUnhappyFollowers = ~followersDancingIndeces & followers(:, 12) > 0;
+    for unhappyFollowerPartnerIndex = followers(partneredUnhappyFollowers, 12)
+        followers(unhappyFollowerPartnerIndex, 11) = -1;
+    end
+
+    currentLeaderPopulation = sum(leadersDancingIndeces);
     currentFollowerPopulation = sum(followersDancingIndeces);
 
     totalSceneHappiness = sum([leaders(leadersDancingIndeces, 11); ...
         followers(followersDancingIndeces, 11)]);
 
-    %% Display the dancers mean happiness values
+    % Display the dancers mean happiness values
     errorbar(i, mean(leaders(leadersDancingIndeces,11)), std(leaders(leadersDancingIndeces,11)), 'ro')
     hold on
     errorbar(i, mean(followers(followersDancingIndeces,11)), std(followers(followersDancingIndeces,11)), 'bo')
@@ -114,19 +126,19 @@ end
 function newDancers = createNewDancers(numberOfNewDancers)
 % these are the different properties that make up the dancers stance on
 % different topics. 0 is "medium", negative means no, positive means yes
-dancerProps = {'planned',...
-    'price-sensitive',...
-    'roled',...
-    'partnered',...
-    'outgoing',...
-    'equalitarian',...
-    'feminist/masculinist',...
-    'home-scene bound',...
-    'returning',...
-    'frustration-tolerant',...
-    'happy/motivated',...
-    'preferred partner',...
-    'visited workshops'...
+dancerProps = {'planned',... 1
+    'price-sensitive',... 2
+    'roled',... 3
+    'partnered',... 4
+    'outgoing',... 5
+    'equalitarian',... 6
+    'feminist/masculinist',... 7
+    'home-scene bound',... 8
+    'returning',... 9
+    'frustration-tolerant',... 10
+    'happy/motivated',... 11
+    'preferred partner',... 12
+    'visited workshops'... 13
 };
 
 newDancers = [randn(numberOfNewDancers, length(dancerProps) - 4), ... % the personal attributes are normally distributed
