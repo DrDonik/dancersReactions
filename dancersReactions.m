@@ -23,8 +23,18 @@ followers = createNewDancers(initialFollowerPopulation);
 % what part of the dancers is partnered?
 partneredRatio = 0.5;
 partneredDancers = partneredRatio*min(initialLeaderPopulation,initialFollowerPopulation);
-leaders(1:partneredDancers, 13) = 1:partneredDancers; % now the initial population is partially partnered
-followers(1:partneredDancers, 13) = 1:partneredDancers;
+leaders(1:partneredDancers, 13) = 1:partneredDancers;
+followers(1:partneredDancers, 13) = 1:partneredDancers; % now the initial population is partially partnered
+% partnered dancers get an advantage, as their planned property is the
+% maximum of the two properties
+partneredLeaders = leaders(:, 12) > 0;
+if sum(partneredLeaders) > 0
+    for partneredLeadersIndex = find(partneredLeaders)
+        leaders(partneredLeadersIndex, 1) = max([leaders(partneredLeadersIndex, 1), ...
+            followers(leaders(partneredLeadersIndex, 12), 1)]);
+        followers(leaders(partneredLeadersIndex, 12), 1) = leaders(partneredLeadersIndex, 1);
+    end
+end
 
 totalSceneHappiness = sum([leaders(:, 11); ...
     followers(:, 11)]);
@@ -40,7 +50,7 @@ for i = 1:100
     followers = [followers; createNewDancers(newFollowerPopulation)];
     
     % Partnered dancers will have their average happiness as their current score
-    partneredLeaders = leaders(:, 12) > 0;
+    partneredLeaders = leaders(:, 12) > 0; % this currently also updates the already inactive dancers every round. Here, some time could be gained if needed
     if sum(partneredLeaders) > 0
         for partneredLeadersIndex = find(partneredLeaders)
             leaders(partneredLeadersIndex, 11) = mean([leaders(partneredLeadersIndex, 11), ...
