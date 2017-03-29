@@ -22,9 +22,9 @@ followers = createNewDancers(initialFollowerPopulation);
 
 % what part of the dancers is partnered?
 partneredRatio = 0.5;
-partneredDancers = partneredRatio*min(initialLeaderPopulation,initialLeaderPopulation);
-leaders(partneredDancers+1:end, 13)=0; % now the initial population is partially partnered
-followers(partneredDancers+1:end, 13)=0;
+partneredDancers = partneredRatio*min(initialLeaderPopulation,initialFollowerPopulation);
+leaders(1:partneredDancers, 13) = 1:partneredDancers; % now the initial population is partially partnered
+followers(1:partneredDancers, 13) = 1:partneredDancers;
 
 totalSceneHappiness = sum([leaders(:, 11); ...
     followers(:, 11)]);
