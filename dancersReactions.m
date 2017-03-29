@@ -85,7 +85,8 @@ for i = 1:100
     applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
     applicantsFollowersIndices = find(applicantsFollowersIndices & followersDancingIndeces);
     thisEventFollowersIndices = followers(applicantsFollowersIndices, :);
-
+    % here, I need to make sure that partners always register together
+    
     % sort the population by their planned-attributed, modified by their motivation
     % the more planned and the more happy/motivated they are, the earlier will
     % the register
@@ -105,7 +106,9 @@ for i = 1:100
             thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),thisEventProps(1)/2));
             thisEventFollowersIndices = thisEventFollowersIndices(1:min(length(thisEventFollowersIndices),length(thisEventLeadersIndices)),:);
             thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),length(thisEventFollowersIndices)));
-
+            % here, I need to take into account that partnered dancers only
+            % participate together
+            
         case 2
             % this is a partnered event
     end
