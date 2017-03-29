@@ -26,11 +26,14 @@ partneredDancers = partneredRatio*min(initialLeaderPopulation,initialLeaderPopul
 leaders(partneredDancers+1:end, 13)=0; % now the initial population is partially partnered
 followers(partneredDancers+1:end, 13)=0;
 
+totalSceneHappiness = sum([leaders(:, 11); ...
+    followers(:, 11)]);
+    
 dancerSummaryFigure = figure;
 
 for i = 1:100
-    %% New dancers will join the scene regularly
-    newLeaderPopulation = 5;
+    %% New dancers will join the scene regularly, based on the total active scene happiness
+    newLeaderPopulation = round(totalSceneHappiness/1000);
     newFollowerPopulation = round(newLeaderPopulation/leadFollowRatio);
     leaders = [leaders; createNewDancers(newLeaderPopulation)];
     followers = [followers; createNewDancers(newFollowerPopulation)];
@@ -40,7 +43,10 @@ for i = 1:100
     currentLeaderPopulation = sum(leadersDancingIndeces);
     followersDancingIndeces = followers(:, 11) > 0;
     currentFollowerPopulation = sum(followersDancingIndeces);
-    
+
+    totalSceneHappiness = sum([leaders(leadersDancingIndeces, 11); ...
+        followers(followersDancingIndeces, 11)]);
+
     %% Display the dancers mean happiness values
     errorbar(i, mean(leaders(leadersDancingIndeces,11)), std(leaders(leadersDancingIndeces,11)), 'ro')
     hold on
