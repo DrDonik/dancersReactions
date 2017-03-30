@@ -40,7 +40,12 @@ totalSceneHappiness = sum([leaders(:, 11); ...
     followers(:, 11)]);
     
 dancerSummaryFigure = figure;
-
+subplot(3,1,1)
+hold on
+title('Dancers'' mean happiness')
+subplot(3,1,2)
+hold on
+title('Dancers'' population')
 for i = 1:100
     %% Update the scene population
     % New dancers will join the scene regularly, based on the total active scene happiness
@@ -70,9 +75,12 @@ for i = 1:100
         followers(followersDancingIndeces, 11)]);
 
     % Display the dancers mean happiness values
-    errorbar(i, mean(leaders(leadersDancingIndeces,11)), std(leaders(leadersDancingIndeces,11)), 'ro')
-    hold on
-    errorbar(i, mean(followers(followersDancingIndeces,11)), std(followers(followersDancingIndeces,11)), 'bo')
+    subplot(3,1,1)
+    plot(i, mean(leaders(leadersDancingIndeces,11)), 'ro')
+    plot(i, mean(followers(followersDancingIndeces,11)), 'bo')
+    subplot(3,1,2)
+    plot(i, currentLeaderPopulation, 'ro')
+    plot(i, currentFollowerPopulation, 'bo')
 
     %% Start an event registration and check who is getting in
     % set the properties of an event
