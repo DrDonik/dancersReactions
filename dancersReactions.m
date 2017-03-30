@@ -23,13 +23,13 @@ followers = createNewDancers(initialFollowerPopulation);
 % what part of the dancers is partnered?
 partneredRatio = 0.5;
 partneredDancers = partneredRatio*min(initialLeaderPopulation,initialFollowerPopulation);
-leaders(1:partneredDancers, 13) = 1:partneredDancers;
-followers(1:partneredDancers, 13) = 1:partneredDancers; % now the initial population is partially partnered
+leaders(1:partneredDancers, 12) = 1:partneredDancers;
+followers(1:partneredDancers, 12) = 1:partneredDancers; % now the initial population is partially partnered
 % partnered dancers get an advantage, as their planned property is the
 % maximum of the two properties
 partneredLeaders = leaders(:, 12) > 0;
 if sum(partneredLeaders) > 0
-    for partneredLeadersIndex = find(partneredLeaders)
+    for partneredLeadersIndex = find(partneredLeaders)'
         leaders(partneredLeadersIndex, 1) = max([leaders(partneredLeadersIndex, 1), ...
             followers(leaders(partneredLeadersIndex, 12), 1)]);
         followers(leaders(partneredLeadersIndex, 12), 1) = leaders(partneredLeadersIndex, 1);
@@ -58,15 +58,17 @@ for i = 1:100
     leaders = [leaders; createNewDancers(round(newLeaderPopulation))];
     followers = [followers; createNewDancers(round(newFollowerPopulation))];
     % partner the new dancers up
-    leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12) = ...
-        length(followers)-round(newLeaderPopulation*partneredRatio)+1:length(followers);
-    followers(leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12), 12) = ...
-        length(leaders)-round(newLeaderPopulation*partneredRatio)+1:length(leaders);
+    if newLeaderPopulation >= 0.5 && newFollowerPopulation >= 0.5
+        leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12) = ...
+            length(followers)-round(newLeaderPopulation*partneredRatio)+1:length(followers);
+        followers(leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12), 12) = ...
+            length(leaders)-round(newLeaderPopulation*partneredRatio)+1:length(leaders);
+    end
     
     % Partnered dancers will have their average happiness as their current score
     partneredLeaders = leaders(:, 12) > 0; % this currently also updates the already inactive dancers every round. Here, some time could be gained if needed
     if sum(partneredLeaders) > 0
-        for partneredLeadersIndex = find(partneredLeaders)
+        for partneredLeadersIndex = find(partneredLeaders)'
             leaders(partneredLeadersIndex, 11) = mean([leaders(partneredLeadersIndex, 11), ...
                 followers(leaders(partneredLeadersIndex, 12), 11)]);
             followers(leaders(partneredLeadersIndex, 12), 11) = leaders(partneredLeadersIndex, 11);
