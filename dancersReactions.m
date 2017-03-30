@@ -46,6 +46,10 @@ title('Dancers'' mean happiness')
 subplot(3,1,2)
 hold on
 title('Dancers'' population')
+subplot(3,1,3)
+hold on
+title('Dancers'' mean planning skills')
+
 for i = 1:100
     %% Update the scene population
     % New dancers will join the scene regularly, based on the total active scene happiness
@@ -81,6 +85,9 @@ for i = 1:100
     subplot(3,1,2)
     plot(i, currentLeaderPopulation, 'ro')
     plot(i, currentFollowerPopulation, 'bo')
+    subplot(3,1,3)
+    plot(i, mean(leaders(leadersDancingIndeces,1)), 'ro')
+    plot(i, mean(followers(followersDancingIndeces,1)), 'bo')
 
     %% Start an event registration and check who is getting in
     % set the properties of an event
