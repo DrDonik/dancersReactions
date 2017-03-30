@@ -57,6 +57,11 @@ for i = 1:100
     newFollowerPopulation = newLeaderPopulation/leadFollowRatio;
     leaders = [leaders; createNewDancers(round(newLeaderPopulation))];
     followers = [followers; createNewDancers(round(newFollowerPopulation))];
+    % partner the new dancers up
+    leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12) = ...
+        length(followers)-round(newLeaderPopulation*partneredRatio)+1:length(followers);
+    followers(leaders(end-round(newLeaderPopulation*partneredRatio)+1:end, 12), 12) = ...
+        length(leaders)-round(newLeaderPopulation*partneredRatio)+1:length(leaders);
     
     % Partnered dancers will have their average happiness as their current score
     partneredLeaders = leaders(:, 12) > 0; % this currently also updates the already inactive dancers every round. Here, some time could be gained if needed
