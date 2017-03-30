@@ -53,10 +53,10 @@ title('Dancers'' mean planning skills')
 for i = 1:100
     %% Update the scene population
     % New dancers will join the scene regularly, based on the total active scene happiness
-    newLeaderPopulation = round(totalSceneHappiness/1000);
-    newFollowerPopulation = round(newLeaderPopulation/leadFollowRatio);
-    leaders = [leaders; createNewDancers(newLeaderPopulation)];
-    followers = [followers; createNewDancers(newFollowerPopulation)];
+    newLeaderPopulation = totalSceneHappiness/1000;
+    newFollowerPopulation = newLeaderPopulation/leadFollowRatio;
+    leaders = [leaders; createNewDancers(round(newLeaderPopulation))];
+    followers = [followers; createNewDancers(round(newFollowerPopulation))];
     
     % Partnered dancers will have their average happiness as their current score
     partneredLeaders = leaders(:, 12) > 0; % this currently also updates the already inactive dancers every round. Here, some time could be gained if needed
