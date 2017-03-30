@@ -76,25 +76,25 @@ for i = 1:100
     end
     
     % Dancers with negative happiness are no longer part of the scene
-    leadersDancingIndeces = leaders(:, 11) > 0;
-    followersDancingIndeces = followers(:, 11) > 0;
+    leadersDancingIndices = leaders(:, 11) > 0;
+    followersDancingIndices = followers(:, 11) > 0;
 
-    currentLeaderPopulation = sum(leadersDancingIndeces);
-    currentFollowerPopulation = sum(followersDancingIndeces);
+    currentLeaderPopulation = sum(leadersDancingIndices);
+    currentFollowerPopulation = sum(followersDancingIndices);
 
-    totalSceneHappiness = sum([leaders(leadersDancingIndeces, 11); ...
-        followers(followersDancingIndeces, 11)]);
+    totalSceneHappiness = sum([leaders(leadersDancingIndices, 11); ...
+        followers(followersDancingIndices, 11)]);
 
     % Display the dancers mean happiness values
     subplot(3,1,1)
-    plot(i, mean(leaders(leadersDancingIndeces,11)), 'ro')
-    plot(i, mean(followers(followersDancingIndeces,11)), 'bo')
+    plot(i, mean(leaders(leadersDancingIndices,11)), 'ro')
+    plot(i, mean(followers(followersDancingIndices,11)), 'bo')
     subplot(3,1,2)
     plot(i, currentLeaderPopulation, 'ro')
     plot(i, currentFollowerPopulation, 'bo')
     subplot(3,1,3)
-    plot(i, mean(leaders(leadersDancingIndeces,1)), 'ro')
-    plot(i, mean(followers(followersDancingIndeces,1)), 'bo')
+    plot(i, mean(leaders(leadersDancingIndices,1)), 'ro')
+    plot(i, mean(followers(followersDancingIndices,1)), 'bo')
 
     %% Start an event registration and check who is getting in
     % set the properties of an event
@@ -102,10 +102,10 @@ for i = 1:100
 
     % not all will want to participate (currently about half)
     applicantsLeadersIndices = logical(randi(2,1,length(leaders))' - 1);
-    applicantsLeadersIndices = find(applicantsLeadersIndices & leadersDancingIndeces);
+    applicantsLeadersIndices = find(applicantsLeadersIndices & leadersDancingIndices);
     thisEventLeadersIndices = leaders(applicantsLeadersIndices, :);
     applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
-    applicantsFollowersIndices = find(applicantsFollowersIndices & followersDancingIndeces);
+    applicantsFollowersIndices = find(applicantsFollowersIndices & followersDancingIndices);
     thisEventFollowersIndices = followers(applicantsFollowersIndices, :);
     % here, I need to make sure that partners always register together
     
