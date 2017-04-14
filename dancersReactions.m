@@ -40,15 +40,18 @@ totalSceneHappiness = sum([leaders(:, 11); ...
     followers(:, 11)]);
     
 dancerSummaryFigure = figure;
-subplot(3,1,1)
+subplot(4,1,1)
 hold on
 title('Dancers'' mean happiness')
-subplot(3,1,2)
+subplot(4,1,2)
 hold on
 title('Dancers'' population')
-subplot(3,1,3)
+subplot(4,1,3)
 hold on
 title('Dancers'' mean planning skills')
+subplot(4,1,4)
+hold on
+title('Amount of partnered dancers')
 
 for i = 1:100
     %% Update the scene population
@@ -90,15 +93,18 @@ for i = 1:100
         followers(followersDancingIndices, 11)]);
 
     % Display the dancers mean happiness values
-    subplot(3,1,1)
+    subplot(4,1,1)
     plot(i, mean(leaders(leadersDancingIndices,11)), 'ro')
     plot(i, mean(followers(followersDancingIndices,11)), 'bo')
-    subplot(3,1,2)
+    subplot(4,1,2)
     plot(i, currentLeaderPopulation, 'ro')
     plot(i, currentFollowerPopulation, 'bo')
-    subplot(3,1,3)
+    subplot(4,1,3)
     plot(i, mean(leaders(leadersDancingIndices,1)), 'ro')
     plot(i, mean(followers(followersDancingIndices,1)), 'bo')
+    subplot(4,1,4)
+    plot(i, sum(partneredLeaders)/length(leaders), 'ro')
+    plot(i, sum(partneredLeaders)/length(followers), 'bo')
 
     %% Start an event registration and check who is getting in
     % set the properties of an event
