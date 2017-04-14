@@ -106,12 +106,22 @@ for i = 1:100
 
     % not all will want to participate (currently about half)
     applicantsLeadersIndices = logical(randi(2,1,length(leaders))' - 1);
+    applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
+    % Make sure that partners always register together. This depends on
+    % x-oring the above random choice, which results again in half of them
+    % registering. But this only works if the random choice above also
+    % chooses half of the population.
+    if sum(partneredLeaders) > 0
+        for partneredLeadersIndex = find(partneredLeaders)'
+            applicantsLeadersIndices(partneredLeadersIndex) = ...
+                xor(applicantsLeadersIndices(partneredLeadersIndex), applicantsFollowersIndices(leaders(partneredLeadersIndex, 12)));
+            applicantsFollowersIndices(leaders(partneredLeadersIndex, 12)) = applicantsLeadersIndices(partneredLeadersIndex);
+        end
+    end
     applicantsLeadersIndices = find(applicantsLeadersIndices & leadersDancingIndices);
     thisEventLeadersIndices = leaders(applicantsLeadersIndices, :);
-    applicantsFollowersIndices = logical(randi(2,1,length(followers))' - 1);
     applicantsFollowersIndices = find(applicantsFollowersIndices & followersDancingIndices);
     thisEventFollowersIndices = followers(applicantsFollowersIndices, :);
-    % here, I need to make sure that partners always register together
     
     % sort the population by their planned-attributed, modified by their motivation
     % the more planned and the more happy/motivated they are, the earlier will
