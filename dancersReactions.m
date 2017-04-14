@@ -66,12 +66,16 @@ for i = 1:100
     end
     
     % Partnered dancers will have their average happiness as their current score
+    % Their planned property is the maximum of the two properties
     partneredLeaders = leaders(:, 12) > 0; % this currently also updates the already inactive dancers every round. Here, some time could be gained if needed
     if sum(partneredLeaders) > 0
         for partneredLeadersIndex = find(partneredLeaders)'
             leaders(partneredLeadersIndex, 11) = mean([leaders(partneredLeadersIndex, 11), ...
                 followers(leaders(partneredLeadersIndex, 12), 11)]);
             followers(leaders(partneredLeadersIndex, 12), 11) = leaders(partneredLeadersIndex, 11);
+            leaders(partneredLeadersIndex, 1) = max([leaders(partneredLeadersIndex, 1), ...
+                followers(leaders(partneredLeadersIndex, 12), 1)]);
+            followers(leaders(partneredLeadersIndex, 12), 1) = leaders(partneredLeadersIndex, 1);
         end
     end
     
