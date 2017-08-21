@@ -148,8 +148,16 @@ for i = 1:100
             thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),thisEventProps(1)/2));
             thisEventFollowersIndices = thisEventFollowersIndices(1:min(length(thisEventFollowersIndices),length(thisEventLeadersIndices)),:);
             thisEventLeadersIndices = thisEventLeadersIndices(1:min(length(thisEventLeadersIndices),length(thisEventFollowersIndices)));
-            % here, I need to take into account that partnered dancers only
-            % participate together
+
+            % Make sure that partnered dancers only participate if they get
+            % in together
+            if sum(partneredLeaders) > 0
+                for partneredLeadersIndex = find(partneredLeaders)'
+                    applicantsLeadersIndices(partneredLeadersIndex) = ...
+                        xor(applicantsLeadersIndices(partneredLeadersIndex), applicantsFollowersIndices(leaders(partneredLeadersIndex, 12)));
+                    applicantsFollowersIndices(leaders(partneredLeadersIndex, 12)) = applicantsLeadersIndices(partneredLeadersIndex);
+                end
+            end
             
         case 2
             % this is a partnered event
